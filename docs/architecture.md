@@ -24,9 +24,10 @@ needs clear state, precise responsibilities, and recoverable instructions.
 
 ### GitHub-native
 
-Use GitHub issues, pull requests, labels, comments, checks, and branch
-protection before adding new infrastructure. GitHub is already the collaboration
-surface for open-source projects and already provides durable objects.
+Use GitHub issues, pull requests, code reviews, labels, comments, checks, and
+branch protection before adding new infrastructure. GitHub is already the
+collaboration surface for open-source projects and already provides durable
+objects.
 
 ### Issue as memory
 
