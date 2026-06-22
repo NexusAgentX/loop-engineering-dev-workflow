@@ -21,6 +21,7 @@ Each issue should contain:
 - agent ownership,
 - validation evidence,
 - audit results,
+- GitHub review links,
 - blocking questions,
 - final outcome.
 
@@ -33,6 +34,7 @@ These facts must not live only in an agent conversation:
 - which PR implements the issue,
 - what tests passed,
 - what audit found,
+- which PR review comment explains the issue,
 - what remains blocked,
 - which assumptions were made,
 - how to resume after interruption.
@@ -95,7 +97,7 @@ Agents should add comments for state transitions that matter:
 - implementer opened PR,
 - implementer reached CI passed,
 - implementer became blocked,
-- auditor passed or failed,
+- auditor submitted GitHub review,
 - coordinator merged PR,
 - coordinator returned work for repair.
 
@@ -108,4 +110,3 @@ A replacement coordinator should be able to recover by reading the root issue an
 linked PRs. A replacement implementer should be able to recover by reading its
 issue, branch, PR, and latest feedback. A replacement auditor should be able to
 recover by reading the issue, PR, diff, CI logs, and repository rules.
-

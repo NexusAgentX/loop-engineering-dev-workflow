@@ -4,6 +4,8 @@ The coordinator agent owns planning, scheduling, reconciliation, audit dispatch,
 merge decisions, and task graph updates.
 
 The coordinator should not busy-wait on CI. Implementers own CI until green.
+The coordinator should also not translate audit findings into a second private
+message when GitHub already holds the PR review.
 
 ## State Diagram
 
@@ -90,8 +92,8 @@ It checks:
 
 ### dispatch-audit
 
-If a PR has passed CI and has not yet passed audit, the coordinator launches an
-auditor agent.
+If a PR has passed CI and has not yet been reviewed, the coordinator launches
+an auditor agent.
 
 The auditor receives:
 
@@ -104,17 +106,18 @@ The auditor receives:
 ### waiting-audit
 
 The coordinator waits for the auditor to finish. The auditor must wake the
-coordinator with pass or fail.
+coordinator after it has submitted the GitHub review.
 
 ### return-to-implementer
 
-If audit fails, the coordinator sends the audit findings back to the original
-implementer. The implementer resumes the branch, fixes the PR, and again owns CI
-until it passes.
+If audit fails, the coordinator marks the issue as returning to implementation.
+The implementer resumes by reading the GitHub PR review comments directly,
+fixing the branch, and again owning CI until it passes.
 
 ### merge-ready
 
-If CI and audit pass, the coordinator merges the PR into its target branch.
+If CI, review state, and base branch checks pass, the coordinator merges the PR
+into its target branch.
 
 For child PRs, the target is the root branch. For the root PR or simple PR, the
 target is `main`.
@@ -134,17 +137,15 @@ The coordinator can be woken by:
 
 - implementer: PR CI passed,
 - implementer: blocked,
-- auditor: audit passed,
-- auditor: audit failed,
+- auditor: review submitted,
 - human: new requirements or approval,
 - GitHub: merge conflict or branch protection state changed.
 
 ## Coordinator Invariants
 
 - Never launch audit before required CI passes.
-- Never merge before CI and audit both pass.
+- Never merge before CI and review state both pass.
 - Never rely on chat-only state for scheduling.
 - Never dispatch two agents to the same branch unless intentionally repairing.
 - Prefer returning failed audit work to the original implementer.
 - Record every durable state transition in the issue or PR.
-

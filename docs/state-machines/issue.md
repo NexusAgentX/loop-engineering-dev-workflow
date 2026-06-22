@@ -78,13 +78,13 @@ An auditor is reviewing the PR.
 
 ### audit-failed
 
-Audit found required fixes. The coordinator should return the issue to the
-original implementer.
+The PR has a GitHub review with `REQUEST_CHANGES`. The coordinator should mark
+the issue as returning to implementation.
 
 ### audit-passed
 
-The auditor passed the PR. The coordinator may merge if branch protection allows
-it.
+The PR has a GitHub review with `APPROVE`. The coordinator may merge if branch
+protection allows it.
 
 ### merged
 
@@ -122,4 +122,3 @@ planning
 - Every blocked issue names the blocker.
 - Every audit failure lists required fixes.
 - Every closed issue links to merged evidence or cancellation rationale.
-

@@ -40,6 +40,12 @@ handoff notes.
 A pull request is the reviewable and mergeable output of agent work. Agent work
 that does not end in a PR is not considered delivered.
 
+### PR review as audit memory
+
+Audit findings should live on the pull request as GitHub review comments and a
+formal review outcome. The coordinator should read PR review state instead of
+carrying detailed audit findings in chat.
+
 ### Concurrency with isolation
 
 Parallel work should use isolated Paseo worktrees and branches. Agents should
@@ -82,7 +88,8 @@ the PR has passed CI.
 ### Auditor agent
 
 An auditor reviews a CI-passing PR against its issue, the repository rules, and
-the actual diff. It does not modify code. It reports pass or fail with evidence.
+the actual diff. It does not modify code. It records findings in the PR review
+itself using GitHub-native review comments and review outcomes.
 
 ### GitHub issue
 
@@ -145,9 +152,10 @@ root issue
 When state conflicts, prefer sources in this order:
 
 1. GitHub PR merge status and checks.
-2. GitHub issue task graph and latest coordinator comment.
-3. Git branch history and worktree state.
-4. Agent memory or chat context.
+2. GitHub PR review state and review comments.
+3. GitHub issue task graph and latest coordinator comment.
+4. Git branch history and worktree state.
+5. Agent memory or chat context.
 
 Agent memory is useful but not authoritative.
 
@@ -160,10 +168,9 @@ reading:
 - linked child issues,
 - linked PRs,
 - latest CI results,
-- latest audit comments,
+- latest PR reviews,
 - branch names,
 - worktree or workspace identifiers when available.
 
 If recovery is not possible from GitHub state, the workflow has failed its
 primary design goal.
-

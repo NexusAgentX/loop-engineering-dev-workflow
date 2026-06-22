@@ -3,7 +3,8 @@
 The auditor agent reviews a CI-passing PR. It checks whether the PR satisfies the
 issue and project rules.
 
-The auditor does not modify implementation code.
+The auditor does not modify implementation code. It writes the review directly
+to the GitHub PR, including inline comments when needed.
 
 ## State Diagram
 
@@ -12,16 +13,7 @@ assigned
   -> collect-context
   -> review-diff
   -> review-validation
-  -> decide
-  -> report-pass
-  -> notify-coordinator
-```
-
-Failure path:
-
-```text
-decide
-  -> report-fail
+  -> submit-github-review
   -> notify-coordinator
 ```
 
@@ -47,7 +39,7 @@ The auditor reads:
 - diff,
 - CI results,
 - relevant project rules,
-- prior audit comments if any.
+- prior PR reviews if any.
 
 ### review-diff
 
@@ -59,21 +51,15 @@ hidden shortcuts.
 The auditor verifies that tests and validation evidence match the risk of the
 change.
 
-### decide
+### submit-github-review
 
-The auditor decides `pass` or `fail`.
+The auditor submits the GitHub review:
 
-Pass means the PR can be merged if branch protection allows it. Fail means the
-coordinator must return the task to implementation.
+- `APPROVE` when the PR can merge,
+- `REQUEST_CHANGES` when fixes are required,
+- `COMMENT` when it has notes but no blocking decision.
 
-### report-pass
-
-The auditor writes evidence for why the PR can merge.
-
-### report-fail
-
-The auditor writes concrete findings and required fixes. Findings should be
-specific enough for the implementer to act without guessing.
+It also leaves inline comments on exact lines or files when useful.
 
 ### blocked
 
@@ -82,8 +68,8 @@ state is inconsistent.
 
 ### notify-coordinator
 
-The auditor wakes the coordinator with the result and a link to its audit
-comment.
+The auditor wakes the coordinator with the PR review result and a link to the
+review.
 
 ## Auditor Invariants
 
@@ -93,4 +79,4 @@ comment.
 - Prefer concrete file and behavior findings.
 - Separate blocking issues from optional improvements.
 - Record residual risk even on pass.
-
+- Put findings in the GitHub review so implementers can read them directly.

@@ -92,44 +92,51 @@ Audit scope:
 - Check changed files.
 - Check CI evidence.
 - Check project rules.
-Expected result: pass | fail with findings
+Expected GitHub review: APPROVE | REQUEST_CHANGES | COMMENT
 ```
 
-The auditor should not modify the branch.
+The auditor should not modify the branch. It should submit a GitHub PR review
+instead.
 
 ### auditor.audit-passed
 
-Sent by auditor to coordinator when review passes.
+Sent by auditor to coordinator when a GitHub review with `APPROVE` is
+submitted.
 
 ```md
 Event: auditor.audit-passed
 Issue: #123
 PR: #456
 Result: pass
+GitHub review: APPROVE
 Evidence:
 - ...
 Residual risk:
 - ...
 ```
 
-The coordinator may merge if branch protection and base branch checks pass.
+The coordinator may merge if branch protection, base branch checks, and review
+state all pass.
 
 ### auditor.audit-failed
 
-Sent by auditor to coordinator when review fails.
+Sent by auditor to coordinator when a GitHub review with `REQUEST_CHANGES` is
+submitted.
 
 ```md
 Event: auditor.audit-failed
 Issue: #123
 PR: #456
 Result: fail
-Required fixes:
-- ...
+GitHub review: REQUEST_CHANGES
+Review: <GitHub review URL>
 Evidence:
 - ...
 ```
 
-The coordinator should return the task to the original implementer.
+The coordinator should return the task to the original implementer, but the
+implementer should read the review comments directly from GitHub instead of the
+coordinator retransmitting them.
 
 ### coordinator.returned-for-repair
 
@@ -140,12 +147,12 @@ Event: coordinator.returned-for-repair
 Issue: #123
 PR: #456
 Audit result: fail
-Required fixes:
-- ...
+Review: <GitHub review URL>
 Next state: implementer owns CI again
 ```
 
-The implementer repairs the PR and repeats the CI loop.
+The implementer reads the GitHub review comments, repairs the PR, and repeats
+the CI loop.
 
 ### coordinator.merged
 
@@ -203,4 +210,3 @@ Before acting on an event, the coordinator should refresh GitHub state and ask:
 
 If the event is stale, record that it was ignored and continue from current
 GitHub state.
-

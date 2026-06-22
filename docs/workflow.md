@@ -35,9 +35,13 @@ issue
 5. If CI fails, the implementer fixes the branch and waits again.
 6. When CI passes, the implementer wakes the coordinator and records status.
 7. The coordinator launches an auditor for the PR.
-8. The auditor writes pass or fail with evidence.
-9. If audit fails, the coordinator wakes the original implementer to repair.
-10. If audit passes, the coordinator merges the PR and closes the issue.
+8. The auditor leaves a GitHub review with inline comments and a formal review
+   outcome.
+9. If the review requests changes, the coordinator marks the PR as not yet
+   mergeable and the original implementer reads the PR review comments on
+   GitHub to repair the branch.
+10. If the review approves the PR, the coordinator merges the PR and closes the
+    issue.
 
 ## Coordinated Workflow
 
@@ -110,8 +114,7 @@ Important wakeup events:
 
 - Implementer reports PR CI passed.
 - Implementer reports blocked after exhausting local repair.
-- Auditor reports audit passed.
-- Auditor reports audit failed.
+- Auditor submits a GitHub review with `APPROVE` or `REQUEST_CHANGES`.
 - Human provides missing input.
 - Merge conflict or branch protection failure requires reconciliation.
 
@@ -132,7 +135,8 @@ environments, or other exclusive resources.
 
 If audit fails, the coordinator should return the task to the original
 implementer whenever possible. The original implementer already owns the branch,
-PR, and local context.
+PR, and local context. The coordinator does not need to relay full review
+findings because the implementer can read GitHub review comments directly.
 
 Only create a replacement repair agent when:
 
@@ -155,4 +159,3 @@ A complex root issue is done when:
 - all child PRs are merged into the root branch or intentionally cancelled,
 - the root PR is merged to `main`,
 - final CI and final audit evidence are present.
-

@@ -39,7 +39,9 @@ The audit agent checks whether the PR should be accepted. It reviews:
 - whether the solution is smaller or larger than necessary,
 - whether the PR violates project rules.
 
-The audit agent does not edit the branch. It reports pass or fail.
+The audit agent does not edit the branch. It records its findings as a GitHub
+PR review, using inline comments for specific code issues and a formal review
+outcome for the overall decision.
 
 ## Audit Output
 
@@ -48,7 +50,7 @@ Audit output should be written to the PR and linked issue:
 ```md
 ## Audit Result
 
-Result: pass | fail
+GitHub review: APPROVE | REQUEST_CHANGES | COMMENT
 
 ## Evidence
 
@@ -74,18 +76,19 @@ The protected `main` branch should require:
 - no direct pushes,
 - no force pushes.
 
-For a minimal GitHub-native setup, the audit signal can be represented by a
-label, status check, or required PR review. The repository should choose the
-simplest enforceable mechanism available.
+For a minimal GitHub-native setup, the audit signal should preferably be the
+native PR review state itself. A label or status check can be added later if the
+branch protection model needs an extra machine-readable gate.
 
 ## Failed Audit
 
 When audit fails:
 
-1. The auditor records concrete findings.
-2. The auditor wakes the coordinator.
-3. The coordinator returns the task to the original implementer.
-4. The implementer fixes the PR and repeats CI.
+1. The auditor submits a `REQUEST_CHANGES` review with concrete findings.
+2. The coordinator reads the PR review state and marks the task as returning to
+   implementation.
+3. The original implementer reads the GitHub review comments and fixes the PR.
+4. The implementer repeats CI.
 5. The coordinator launches a fresh audit after CI passes again.
 
 ## Human Escalation
@@ -99,4 +102,3 @@ Escalate to a human when:
 - agents disagree repeatedly,
 - external credentials or permissions are needed,
 - branch protection or repository settings must change.
-

@@ -58,15 +58,16 @@ The coordinator has not yet dispatched audit.
 
 ### audit-running
 
-An auditor is reviewing the PR.
+An auditor is reviewing the PR and preparing a GitHub review.
 
 ### audit-failed
 
-Audit failed. The coordinator returns the work to the implementer.
+Audit failed. The PR has `REQUEST_CHANGES`, and the implementer should read the
+review comments on GitHub.
 
 ### audit-passed
 
-Audit passed. The PR can move toward merge.
+Audit passed. The PR has `APPROVE` and can move toward merge.
 
 ### mergeable
 
@@ -106,5 +107,5 @@ The coordinator must verify the base branch before audit and merge.
 - Every PR has a clear base branch.
 - Implementers own CI failure repair.
 - Auditors own audit result.
+- GitHub review state is the durable audit result.
 - Coordinators own merge decisions.
-

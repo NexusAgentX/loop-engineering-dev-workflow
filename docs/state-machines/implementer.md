@@ -89,12 +89,13 @@ The implementer wakes the coordinator and includes:
 
 ### waiting-audit
 
-The implementer stops active work but remains resumable. The coordinator may send
-repair instructions if audit fails.
+The implementer stops active work but remains resumable. It should watch the PR
+for the auditor's GitHub review. The coordinator may wake it only to note that
+the PR is returning to implementation; the actual findings live in the review.
 
 ### audit-failed
 
-The coordinator returns audit findings. The implementer fixes them and owns CI
+The implementer reads the review comments from GitHub, fixes them, and owns CI
 again.
 
 ### blocked
@@ -110,4 +111,4 @@ coordinator.
 - Do not merge.
 - Do not edit outside scope without recording why.
 - Keep issue and PR state current enough for recovery.
-
+- Read PR review comments directly from GitHub when audit requests changes.

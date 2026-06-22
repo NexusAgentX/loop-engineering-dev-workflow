@@ -15,6 +15,7 @@ Loop engineering treats development as a set of feedback loops:
 
 - Issues define work and persist project memory.
 - Pull requests contain deliverable artifacts.
+- PR reviews persist audit memory.
 - CI verifies mechanical correctness.
 - Audit agents verify intent, completeness, and code quality.
 - Branch protection turns those checks into merge requirements.
